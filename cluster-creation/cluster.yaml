@@ -1,0 +1,18 @@
+apiVersion: provisioning.cattle.io/v1
+kind: Cluster
+metadata:
+  name: edge-cluster-site-a
+  namespace: fleet-default
+spec:
+  kubernetesVersion: v1.35.6+rke2r1
+  rkeConfig:
+    machinePools:
+      - name: pool1
+        quantity: 1
+        etcdRole: true
+        controlPlaneRole: true
+        workerRole: true
+        machineConfigRef:
+          kind: MachineInventorySelectorTemplate
+          name: "edge-site-a"
+          apiVersion: elemental.cattle.io/v1beta1

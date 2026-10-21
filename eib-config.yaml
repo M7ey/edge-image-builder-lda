@@ -1,0 +1,27 @@
+apiVersion: 1.3
+image:
+  imageType: iso
+  arch: x86_64
+  baseImage: SL-Micro.x86_64-6.2-Base-SelfInstall-GM.install.iso
+  outputImageName: elemental-image.iso
+operatingSystem:
+  keymap: us
+  time:
+    timezone: Europe/Paris
+    ntp:
+      forceWait: false
+      pools:
+        - 2.suse.pool.ntp.org
+  isoConfiguration:
+    installDevice: /dev/sda   # <- /dev/sda (Proxmox SCSI /  SATA) | /dev/vda (Harvester / Proxmox VirtIO-Block)
+  users:
+    - username: root
+      createHomeDir: true
+      encryptedPassword: HASCHED PASSWORD #(openssl passwd -6 "yourpassword")
+  packages:
+    packageList:
+      - qemu-guest-agent
+    sccRegistrationCode: "SCC CODE"
+  systemd:
+    enable:
+      - qemu-guest-agent

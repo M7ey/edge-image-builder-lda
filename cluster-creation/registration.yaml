@@ -1,0 +1,21 @@
+apiVersion: elemental.cattle.io/v1beta1
+kind: MachineRegistration
+metadata:
+  name: edge-cluster-site-a
+  namespace: fleet-default
+spec:
+  machineName: "edge-${System Information/UUID}"
+  machineInventoryLabels:
+    locationID: "edge-site-a"
+    manufacturer: "${System Information/Manufacturer}"
+    productName: "${System Information/Product Name}"
+  config:
+    elemental:
+      registration:
+        no-toolkit: true
+        emulate-tpm: true
+        emulated-tpm-seed: -1
+
+
+
+

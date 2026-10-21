@@ -1,0 +1,10 @@
+elemental:
+    registration:
+        url: # Registration URL from Elemental
+        ca-cert: |
+            -----BEGIN CERTIFICATE-----
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            -----END CERTIFICATE-----
+        emulate-tpm: true # Because my proxmox has no TPM on the VM
+        emulated-tpm-seed: -1 # same
+        auth: tpm

@@ -1,0 +1,36 @@
+apiVersion: 1.3
+image:
+  imageType: iso
+  arch: x86_64
+  baseImage: SL-Micro.x86_64-6.2-Base-SelfInstall-GM.install.iso
+  outputImageName: eibimage.iso
+operatingSystem:
+  isoConfiguration:
+    installDevice: /dev/sda
+  time:
+    timezone: Europe/Paris
+    ntp:
+      forceWait: true
+      pools:
+        - 2.suse.pool.ntp.org
+      servers:
+        - 10.0.0.1
+        - 10.0.0.2
+  enableFIPS: false
+  keymap: fr
+  users:
+    - username: cosmo
+      uid: 2000
+      encryptedPassword: "passwordHash"
+      sshKeys:
+        - sshpubkey
+      createHomeDir: true
+      primaryGroup: users
+      secondaryGroups:
+        - wheel
+kubernetes:
+  version: v1.35.7+k3s1
+  manifests:
+    urls:
+      - https://prime.cosmocilaos.app/v3/import/hdvdlmqmrxvw6hp94dmnrcmc2g9pb85qxhmb2fx96hr4zlkhrsdwt7_c-4jrrb.yaml
+#URL to Be imported to rancher but can / could also be done after
