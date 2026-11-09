@@ -21,7 +21,7 @@ operatingSystem:
   packages:
     packageList:
       - qemu-guest-agent
-    sccRegistrationCode: "SCC CODE"
+    sccRegistrationCode: "INTERNAL-USE-ONLY-88e8-745e"
   systemd:
     enable:
       - qemu-guest-agent

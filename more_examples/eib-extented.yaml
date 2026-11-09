@@ -1,0 +1,107 @@
+apiVersion: 1.3
+image:
+  imageType: iso
+  arch: x86_64
+  baseImage: SL-Micro.x86_64-6.2-Base-SelfInstall-GM.install.iso
+  outputImageName: site-a-edge.iso # Name of the image Output
+operatingSystem:
+  isoConfiguration:
+    installDevice: /dev/sda
+  time:
+    timezone: Europe/Paris
+    ntp:
+      forceWait: false # Don't wait for NTP
+      servers:
+        - 2.suse.pool.ntp.org
+  users:
+    - username: root
+      encryptedPassword: ""
+      createHomeDir: true
+      sshKeys:
+        - #public SSH Key 
+  packages:
+    sccRegistrationCode: "SCC Registration code"    
+    packageList:
+      - open-iscsi                           # longhorn required
+      - nfs-client                         
+  systemd:
+    enable:
+      - iscsid
+kubernetes:
+  version: v1.36.3+rke2r1 #K3s : v1.36.3+k3s1     
+  network:
+    apiVIP: 192.168.1.235 # K8S VIP Hosted by Metallb 
+    apiHost: api.site-a.local
+  nodes:
+    - hostname: node1
+      type: server
+      initializer: true # First node to initialize the cluster
+    - hostname: node2
+      type: server
+    - hostname: node3
+      type: server
+  helm:
+    charts:
+      - name: suse-storage # CHART TO INSTALL LONGHORN
+        releaseName: longhorn
+        version: 1.12.1
+        repositoryName: appco
+        targetNamespace: longhorn-system
+        createNamespace: true
+        installationNamespace: kube-system
+      - name: system-upgrade-controller # CHART TO INSTALL SUC
+        version: 110.0.0
+        repositoryName: rancher-charts
+        targetNamespace: cattle-system
+        createNamespace: true
+        installationNamespace: kube-system
+      - name: demo-nginx # CHART TO INSTALL MY SIMPLE NGINX APP
+        version: 1.0.0
+        repositoryName: gitlab
+        targetNamespace: demo-nginx
+        createNamespace: true
+        installationNamespace: kube-system
+        valuesFile: demo-nginx.yaml
+    repositories:
+      - name: gitlab
+        url: oci://registry # Registry OCI on Gitlab where I host nginx
+        authentication:
+          username: gitlab+deploy-token-17000492
+          password: "XXXXXXXXXXXXXXXXXXXXXXXX"
+      - name: appco # SUSE APP CATALOG
+        url: oci://dp.apps.rancher.io/charts
+        authentication:
+          username: "REPLACE BY EMAIL"
+          password: "PASSWORD"
+      - name: rancher-charts
+        url: https://charts.rancher.io/
+embeddedArtifactRegistry:
+  registries:
+ #   - uri: oci://IP:Port/charts # IF NEEDED
+ #     authentication:
+ #       username: #USERNAME
+ #       password: #PASSWORD
+    - uri: dp.apps.rancher.io
+      authentication:
+        username: "REPLACE BY EMAIL"
+        password: "PASSWORD"
+  images:
+    # SUSE Storage 1.12.1 — liste générée par helm template
+    - name: dp.apps.rancher.io/containers/kubernetes-csi-external-attacher:4.12.0-19.1
+    - name: dp.apps.rancher.io/containers/kubernetes-csi-external-provisioner:5.3.0-21.1
+    - name: dp.apps.rancher.io/containers/kubernetes-csi-external-resizer:2.2.1-12.1
+    - name: dp.apps.rancher.io/containers/kubernetes-csi-external-snapshotter:8.6.0-20.1
+    - name: dp.apps.rancher.io/containers/kubernetes-csi-livenessprobe:2.19.0-19.1
+    - name: dp.apps.rancher.io/containers/kubernetes-csi-node-driver-registrar:2.17.0-19.1
+    - name: dp.apps.rancher.io/containers/longhorn-backing-image-manager:1.12.1-5.5
+    - name: dp.apps.rancher.io/containers/longhorn-engine:1.12.1-5.3
+    - name: dp.apps.rancher.io/containers/longhorn-instance-manager:1.12.1-5.8
+    - name: dp.apps.rancher.io/containers/longhorn-manager:1.12.1-5.2
+    - name: dp.apps.rancher.io/containers/longhorn-share-manager:1.12.1-5.5
+    - name: dp.apps.rancher.io/containers/longhorn-ui:1.12.1-5.2
+    - name: dp.apps.rancher.io/containers/rancher-support-bundle-kit:0.0.92-13.12
+    # SUC
+    - name: docker.io/rancher/kuberlr-kubectl:v8.1.1
+
+
+

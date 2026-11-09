@@ -1,0 +1,25 @@
+
+# NEED TO PUT IT IN THE NETWORK FOLDER AND NEED TO KNOW TH ADDRESS MAC
+#
+interfaces:
+  - name: eth0                    # nom logique ; la MAC désigne l'interface réelle
+    type: ethernet
+    state: up
+    mac-address: "FE:C4:05:42:8B:AA"
+    ipv4:
+      enabled: true
+      dhcp: false
+      address:
+        - ip: 192.168.1.231
+          prefix-length: 24
+    ipv6:
+      enabled: false
+routes:
+  config:
+    - destination: 0.0.0.0/0
+      next-hop-address: 192.168.1.254
+      next-hop-interface: eth0
+dns-resolver:
+  config:
+    server:
+      - 192.168.1.51

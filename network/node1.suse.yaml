@@ -1,0 +1,20 @@
+interfaces:
+- name: eth0
+  type: ethernet
+  state: up
+  mac-address: FE:C4:05:42:8B:AA
+  ipv4:
+    address:
+    - ip: 192.168.1.17
+      prefix-length: 24
+    enabled: true
+    dhcp: false
+routes:
+  config:
+  - destination: 0.0.0.0/0
+    next-hop-address: 192.168.1.254
+    next-hop-interface: eth0
+dns-resolver:
+  config:
+    server:
+    - 192.168.1.51

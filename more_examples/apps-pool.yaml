@@ -1,0 +1,20 @@
+# NEED TO BE PRESENT IN THE kubernetes/manifests/ folder
+#
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: apps-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.1.240-192.168.1.245
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: apps-l2
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - apps-pool
